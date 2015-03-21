@@ -178,7 +178,11 @@ class TwitterBot:
 
     def post_tweet(self, text, reply_to=None, media=None):
         kwargs = {}
-        args = [text]
+        args = []
+
+        #tweepy 3.2 and above broke status as first non-named arg, so name it
+        kwargs['status'] = text
+
         if media is not None:
             cmd = self.api.update_with_media
             args.insert(0, media)
@@ -193,7 +197,7 @@ class TwitterBot:
             else:
                 self.log("-- Posting to own timeline")
 
-            tweet = cmd(*args, **kwargs)
+            tweet = cmd(args,**kwargs)
             self.log('Status posted at {}'.format(self._tweet_url(tweet)))
             return True
 
